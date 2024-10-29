@@ -46,7 +46,7 @@ void setup() {
   mpu.calibrateAccelGyro();
  
   Serial.println("Mag calibration will start in 5sec.");
-  Serial.println("Please Wave device in a figure eight until done.");
+  Serial.println("Please leave the device still on the flat plane.");
   delay(5000);
   mpu.calibrateMag();
  
