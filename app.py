@@ -1,11 +1,10 @@
 import streamlit as st 
 import pandas as pd
 from streamlit_js_eval import streamlit_js_eval
-from tensorflow import keras
-from keras.models import load_model
+import joblib
 
 
-model = load_model('vibration_model.h5')
+model = joblib.load('XGBClassifier_model.pkl')
 
 hide_streamlit_style = """
 <style>
@@ -18,9 +17,8 @@ hide_streamlit_style = """
 """
 
 st.markdown(hide_streamlit_style, unsafe_allow_html=True)
-# st.title('Наша модель выявит неисправность космического аппарата с помощью введенных вами данных')
 
-st.title('Введите данные про ускорения')
+st.title('Enter satellite acceleration data')
 
 lx = st.number_input('linear x')
 ly = st.number_input('linear y')
@@ -32,15 +30,15 @@ average = (lx + ly + lz + rx + ry + rz) / 6
 
 
 
-if st.button('Запуск'):
+if st.button('Launch'):
     vibrations_data = [[lx, ly, lz, rx, ry, rz, average]]
     vibrations_data = pd.DataFrame(vibrations_data, columns=['linear_x' , 'linear_y' ,' linear_z' , 'rotational_x' , 'rotational_y' , 'rotational_z' , 'Average'])
     vibrations_data = vibrations_data.astype('float32')
     st.write(vibrations_data)
     predict = model.predict(vibrations_data)
     predict = 0 if predict<0.5 else 1 
-    result = 'Космический аппарат исправен' if predict == 1 else 'Космический аппарат неисправен'
+    result = 'The satellite is correct' if predict == 1 else 'The satellite is faulty'
     st.title(result)
 
-if st.button("Начать заново"):
+if st.button("Launch again"):
     streamlit_js_eval(js_expressions="parent.window.location.reload()") 
